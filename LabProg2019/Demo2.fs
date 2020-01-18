@@ -46,7 +46,8 @@ let main () =
             let cella = st.maze.getByCoordinates((int x),(int y)) 
             
             Log.msg "%s" (cella.ToString())
-            st.player.move_by (dx, dy)
+            if cella.ToString()="e"|| cella.ToString()="E" then 
+                st.player.move_by (dx, dy)
             Log.msg "x: %f, y: %f" st.player.x st.player.y
             
         with 
@@ -57,14 +58,8 @@ let main () =
     //ignore <| engine.create_and_register_sprite (image.rectangle (W, H, pixel.filled Color.Yellow, pixel.filled Color.Blue), 0, 0, 0)
     for i in 0..R-1 do
         for j in 0..C-1 do
-            if(maze.get(i,j).topWall=true) then
-                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j-1,i, 0)
-            if(maze.get(i,j).bottomWall=true) then
-                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j+1,i, 0)
-            if(maze.get(i,j).rightWall=true) then
-                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j,i-1, 0)
-            if(maze.get(i,j).leftWall=true) then
-                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j,i+1, 0)
+            if(maze.get(i,j).empty=false) then
+                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j,i, 0)
 
     let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), R/2,C/2, 0)
     engine.show_fps<-false
