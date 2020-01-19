@@ -32,7 +32,6 @@ type private image_buffer (con, num) =
 
 // engine
 //
-
 type private 'st loop_data = { frame_cnt : int; elapsed : TimeSpan; now : DateTime; state : 'st; quit : bool }
 
 /// This class provides the 2D ASCII engine.

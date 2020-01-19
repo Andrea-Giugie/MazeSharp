@@ -17,6 +17,21 @@ open System.Text
 // pixel type
 //
 
+type cell () =  //todo sposta quando capisci come fare un altro file
+    member val visited = false with get , set
+    member val topWall = false with get,set
+    member val bottomWall = true with get,set
+    member val rightWall = true with get, set
+    member val leftWall = true with get,set
+    override this . ToString () =
+        let sb = new StringBuilder ()
+        if this.topWall then sb.Append 'T' |> ignore
+        if this.bottomWall then sb.Append 'B' |> ignore
+        if this.rightWall then sb.Append 'R' |> ignore
+        if this.leftWall then sb.Append 'L' |> ignore
+        let s = sb.ToString ()
+        if this.visited then s.ToUpper () else s.ToLower ()
+
 type CharInfo with
     /// Create a new CharInfo given a character, a foreground color and a background color. Background color argument is optional and defaults to black.
     static member create (c : char, fg : Color, ?bg : Color) = 
@@ -26,9 +41,20 @@ type CharInfo with
         ci.fg <- fg
         ci.bg <- bg
         ci
+    static member create (c : String, fg : Color, ?bg : Color) = 
+        let bg = defaultArg bg Color.Black
+        let mutable ci = new CharInfo ()
+        ci.Char.UnicodeChar <- char c
+        ci.fg <- fg
+        ci.bg <- bg
+        ci
 
     /// Shortcut for creating a filled cell given the foreground and background colors.
     static member filled (fg : Color, ?bg : Color) = CharInfo.create (Config.filled_pixel_char, fg, ?bg = bg) 
+    static member cella(fg : Color,grandezza:int, y:int, x:int, ?bg : Color) = 
+        if(x%grandezza>=1 && x%grandezza<=grandezza-2 && (y%grandezza=0 || (y+1)%grandezza=0)) then
+            CharInfo.create (Config.top_pixel_char, fg, ?bg = bg) 
+        else CharInfo.create (Config.filled_pixel_char, fg, ?bg = bg) 
     /// Shortcut for creating an empty cell given the foreground and background colors.
     static member empty = CharInfo.create (Config.empty_pixel_char, Color.White) 
     /// Tests whether this is an empty character cell.
@@ -116,7 +142,17 @@ type wronly_raster (w, h) =
         this.draw_line (x0, y0, x0, y1, px)
         this.draw_line (x1, y1, x1, y0, px)
         this.draw_line (x1, y1, x0, y1, px)
-              
+
+    member this.draw_cell (x0, y0, w, h, color,cella:cell) =
+        let x1, y1 = x0 + w - 1, y0 + h - 1
+        let dash = CharInfo.create(Config.dash,Color.Yellow)
+        let underscore = CharInfo.create(Config.underscore,Color.Yellow)
+        let pipe = CharInfo.create(Config.pipe,Color.Yellow)
+        if(cella.topWall=true || cella.visited=false) then     this.draw_line (x0+1, y0, x1-1, y0, underscore)//top
+        if(cella.leftWall=true) then    this.draw_line (x0, y0, x0, y1, pipe)//sx
+        if(cella.rightWall=true) then       this.draw_line (x1, y1, x1, y0, pipe)//dx
+        if(cella.bottomWall=true) then  this.draw_line (x1-1, y1, x0+1, y1, underscore)     //bottom
+        
     /// Draw a circle with (x0, y0) as center and r as ray, using px as pixel.
     member this.draw_circle (x0, y0, r, px) =
         let plot x y = this.plot (x, y, px)
@@ -292,6 +328,11 @@ type image (w, h, pixels : pixel[]) =
         i.draw_rectangle (0, 0, w, h, px)
         Option.iter (fun px -> i.flood_fill (i.width / 2, i.height / 2, px)) filled_px
         i
+    static member cella (w, h, color,cella:cell, ?filled_px) =
+          let i = new image (w, h)
+          i.draw_cell (0, 0, w, h, color,cella)
+          Option.iter (fun px -> i.flood_fill (i.width / 2, i.height / 2, px)) filled_px
+          i
 
 
 /// Subclass of image representing sprites. Sprites are images that can have a location and can be moved.

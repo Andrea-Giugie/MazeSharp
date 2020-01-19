@@ -19,49 +19,57 @@ type state = {
     maze: maze
 
 }
-let R = 20  //righe i
-let C = 30  //colonne j
+let R = 10  //righe i
+let C = 15  //colonne j
+let GrandezzaCella=7
+let centroCella = GrandezzaCella/2
+
+
 
 
 let main () =       
-    let engine = new engine (C, R)
+    let engine = new engine (C*GrandezzaCella, R*GrandezzaCella)
     let maze = new maze(C,R)
     maze.generate
-         
+    
+    let disegna()=
+        for i in 0..R-1 do
+            for j in 0..C-1 do
+                ignore <| engine.create_and_register_sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Yellow,maze.get(i,j)), (GrandezzaCella*j),(GrandezzaCella*i), 0)
 
 
     let my_update (key : ConsoleKeyInfo) (screen : wronly_raster) (st : state) =
         // move player
         let dx, dy =
             match key.KeyChar with 
-            | 'w' -> 0., -1.
-            | 's' -> 0., 1.
-            | 'a' -> -1., 0.
-            | 'd' -> 1., 0.
+            | 'w' -> 0., float -GrandezzaCella
+            | 's' -> 0., float GrandezzaCella
+            | 'a' -> float -GrandezzaCella, 0.
+            | 'd' -> float GrandezzaCella,0.
             | _   -> 0., 0.
         // TODO: check bounds
         let x = (st.player.x + float dx) 
         let y = (st.player.y + float dy)
         try
-            let cella = st.maze.getByCoordinates((int x),(int y)) 
+            let fixedx = ((int x)-centroCella)/GrandezzaCella
+            let fixedy = ((int y)-centroCella)/GrandezzaCella
+            let cella = st.maze.getByCoordinates(fixedx,fixedy) 
+            cella.visited<-true
             
-            Log.msg "%s" (cella.ToString())
-            if cella.ToString()="e"|| cella.ToString()="E" then 
-                st.player.move_by (dx, dy)
+            Log.msg "current: (%f,%f), going to: (%f,%f) maze: (%d,%d)" st.player.x st.player.y x y fixedy fixedx
+            st.player.move_by (dx, dy)
             Log.msg "x: %f, y: %f" st.player.x st.player.y
             
         with 
         | :? System.IndexOutOfRangeException -> printfn "Exception handled.";
+        
         st, key.KeyChar = 'q'
 
     // create simple backgroud and player
     //ignore <| engine.create_and_register_sprite (image.rectangle (W, H, pixel.filled Color.Yellow, pixel.filled Color.Blue), 0, 0, 0)
-    for i in 0..R-1 do
-        for j in 0..C-1 do
-            if(maze.get(i,j).empty=false) then
-                ignore <| engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Yellow), j,i, 0)
 
-    let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), R/2,C/2, 0)
+    disegna()   
+    let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), centroCella,centroCella, 0)
     engine.show_fps<-false
     // initialize state
     let st0 = { 
