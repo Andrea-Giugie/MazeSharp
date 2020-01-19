@@ -16,15 +16,7 @@ open System.Text
 [<Diagnostics.DebuggerDisplay("{ ToString ()}")>]
 
 
-type cell () =
-    member val empty = true with get,set
-    member val visited = false with get , set
-    override this . ToString () =
-        let sb = new StringBuilder ()
-        if this.empty then sb.Append 'E' |> ignore
-        else sb.Append 'F' |>ignore
-        let s = sb.ToString ()
-        if this.visited then s.ToUpper () else s.ToLower ()
+
 
 
 type CharInfo with
@@ -47,6 +39,6 @@ type maze(w , h ) =
          for i in 0..h-1 do
              for j in 0..w-1 do
                  this.Struttura.[i,j]<-new cell()
-                 if (i=0 || i=h-1 || j=0 || j=w-1) then
-                     (this.get(i,j)).empty<-false
+                     
+
         

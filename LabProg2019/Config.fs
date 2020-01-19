@@ -10,6 +10,10 @@ open Prelude
 
 let filled_pixel_char = '*'
 let wall_pixel_char = '|'
+let top_pixel_char='|'
+let pipe = '|'
+let dash = "-"
+let underscore = '_'
 let empty_pixel_char = ' '
 
 let default_flip_queue = 2  // double buffering
