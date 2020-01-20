@@ -20,9 +20,9 @@ type state = {
     sprites: sprite[]
 
 }
-let R = 10  //righe i
-let C = 15  //colonne j
-let GrandezzaCella=5
+let R = 10 //righe i
+let C = 10  //colonne j
+let GrandezzaCella=3
 let centroCella = GrandezzaCella/2
 
 let genRandomNumbers count =
@@ -48,33 +48,32 @@ let main () =
         let x = (st.player.x + float dx) 
         let y = (st.player.y + float dy)
         //let mutable nuovoSprite = st.sprites
-        try
+        try //Controllo che la cella in cui voglio muovermi esiste, e che non esista un muro tra il player e la cella
             let fixedx = ((int x)-centroCella)/GrandezzaCella
             let fixedy = ((int y)-centroCella)/GrandezzaCella
-            let cella = st.maze.getByCoordinates(fixedx,fixedy) 
-            cella.visited<-true
+            let currentX = ((int st.player.x)-centroCella)/GrandezzaCella
+            let currentY = ((int st.player.y)-centroCella)/GrandezzaCella
+
+            //Controllo che non ci sia un muro 
+            let currentCella = st.maze.getByCoordinates(currentX,currentY)
+            if(fixedx-currentX=1 && currentCella.rightWall=false || fixedx-currentX= -1 && currentCella.leftWall=false || fixedy-currentY=1 && currentCella.bottomWall=false || fixedy-currentY= -1 && currentCella.topWall=false) then
+                let cella = st.maze.getByCoordinates(fixedx,fixedy) 
+                cella.visited<-true
+                Log.msg "cella: (%d,%d), player: (%d,%d)" fixedx fixedy  currentX currentY
         
-            //ignore <| engine.create_and_register_sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella), (0),(0), 1 , 1)
             
-            let NumeroMappato=fixedx+fixedy*C
-            if st.sprites.[NumeroMappato].z = 0 then //Solo quando non è mai stato sovrascritto
-                let immagine = image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella)
-                st.sprites.[NumeroMappato].clear
-                st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
-                engine.register_sprite st.sprites.[NumeroMappato]
+                let NumeroMappato=fixedx+fixedy*C
+                if st.sprites.[NumeroMappato].z = 0 then //Solo quando non è mai stato sovrascritto
+                    let immagine = image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella)
+                    st.sprites.[NumeroMappato].clear
+                    st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
+                    engine.register_sprite st.sprites.[NumeroMappato]
             
-            Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
-            //Log.msg "origin (0,0): %s "((st.maze.getByCoordinates(0,0)).ToString())
-            
-            //nuovoSprite<-new sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella), int st.sprites.x, int st.sprites.y, 2,int st.sprites.id)
-            //st.sprites<-nuovoSprite
-            //engine.overrideSprite(nuovoSprite,st.sprites.id)
-            //Log.msg "idPLayer: %d idCella: %d" st.player.id st.sprites.id 
-            
-            //st.sprites.move_by(1,0)
-            //Log.msg "current: (%f,%f), going to: (%f,%f) maze: (%d,%d)" st.player.x st.player.y x y fixedy fixedx
-            st.player.move_by (dx, dy)
-            Log.msg "x: %f, y: %f" st.player.x st.player.y
+                //Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
+                st.player.move_by (dx, dy)
+                if cella.finishLine=true then
+                    Log.msg "HAI VINTO"
+                //Log.msg "x: %f, y: %f" st.player.x st.player.y
             
             
         with 

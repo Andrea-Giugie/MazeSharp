@@ -25,6 +25,7 @@ type cell () =  //todo sposta quando capisci come fare un altro file
     member val bottomWall = true with get,set
     member val rightWall = true with get, set
     member val leftWall = true with get,set
+    member val finishLine = false with get,set
     override this . ToString () =
         let sb = new StringBuilder ()
         if this.topWall then sb.Append 'T' |> ignore
