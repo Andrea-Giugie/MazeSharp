@@ -20,8 +20,8 @@ type state = {
     sprites: sprite[]
 
 }
-let R = 20 //righe i
-let C = 20  //colonne j
+let R = 10 //righe i
+let C = 10  //colonne j
 let GrandezzaCella=3
 let centroCella = GrandezzaCella/2
 
@@ -71,6 +71,8 @@ let main () =
             
                 //Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
                 st.player.move_by (dx, dy)
+                if cella.finishLine=true then
+                    Log.msg "HAI VINTO"
                 //Log.msg "x: %f, y: %f" st.player.x st.player.y
             
             

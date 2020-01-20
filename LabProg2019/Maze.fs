@@ -132,12 +132,22 @@ type maze(w , h ) =
          //Creo un uscita: 
             //dato che deve essere su un bordo, stabilisco se i o j sono uguali a zero
          let r = System.Random().Next(0, 2)
-
+         if r = 0 then
+            i<-0
+            j<-System.Random().Next(1, w)
+         else
+            j<-0
+            i<-System.Random().Next(1, h)
         //reset
+         this.Struttura.[i,j].finishLine<-true
+         this.Struttura.[i,j].leftWall<-false
+         this.Struttura.[i,j].topWall<-false
+         this.Struttura.[i,j].rightWall<-false
+         this.Struttura.[i,j].bottomWall<-false
         
          for i in 0..h-1 do 
              for j in 0..w-1 do
-                this.Struttura.[i,j].visited<-true
+                this.Struttura.[i,j].visited<-false
             
      //La prima cella e' visitata sicuramente
          
