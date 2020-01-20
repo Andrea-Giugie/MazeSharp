@@ -152,8 +152,17 @@ type wronly_raster (w, h) =
         let pipe = CharInfo.create(Config.pipe,color)
         let blank = CharInfo.create(Config.empty_pixel_char,color)
         if(cella.topWall=true || cella.visited=false) then     this.draw_line (x0+1, y0, x1-1, y0, underscore) else this.draw_line (x0+1, y0, x1-1, y0, blank )//top
-        if(cella.leftWall=true || cella.visited=false) then    this.draw_line (x0, y0, x0, y1, pipe) else this.draw_line (x0, y0, x0, y1, blank)//sx
-        if(cella.rightWall=true || cella.visited=false) then       this.draw_line (x1, y1, x1, y0, pipe) else this.draw_line (x1, y1, x1, y0, blank)//dx
+        if(cella.leftWall=true || cella.visited=false) then    this.draw_line (x0, y0, x0, y1, pipe)
+            else 
+                this.draw_line (x0, y0, x0, y1, blank)//sx
+                this.draw_line (x0,y1,x0,y1,underscore)//Modifico angolo bassosx
+                this.draw_line (x0, y0, x0, y0, underscore)//Modifico angolo altosx
+
+        if(cella.rightWall=true || cella.visited=false) then       this.draw_line (x1, y1, x1, y0, pipe)
+        else 
+            this.draw_line (x1, y1, x1, y0, blank)//dx
+            this.draw_line (x1,y1,x1,y1,underscore)//modifico angolo in bassodx
+            this.draw_line (x1, y0, x1, y0, underscore)//modifico angolo in altodx
         if(cella.bottomWall=true || cella.visited=false) then  this.draw_line (x1-1, y1, x0+1, y1, underscore)else this.draw_line (x1-1, y1, x0+1, y1, blank)     //bottom
         
     /// Draw a circle with (x0, y0) as center and r as ray, using px as pixel.

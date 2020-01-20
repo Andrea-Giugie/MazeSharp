@@ -49,6 +49,14 @@ let getRandomVicino(x:int,y:int,maxX:int,maxY:int,matrice:cell[,])=
     else l.[r]
 let getBool((b,c):bool*cell)=b
 let getCell((b,c):bool*cell)=c
+
+let rec push(l:'a list, elemento:'a)=
+    match l with
+        |[]->[elemento]
+        |[x] -> [x]@[elemento]
+        |x::xs->x::push(xs,elemento)
+
+        
 let cancellaMuri(c1:cell,c2:cell)=
     let Deltax = c1.x-c2.x
     let Deltay = c1.y-c2.y
@@ -65,6 +73,15 @@ let cancellaMuri(c1:cell,c2:cell)=
         c1.topWall<-false
         c2.bottomWall<-false
 // TODO: implement the maze type, its generation (task 1) and its automatic resolution (task 2)
+let labirintoVisitato(struttura:cell[,],h:int,w:int)=
+    let mutable k=0
+    let b = [|
+        for i in 0..h-1 do
+            for j in 0..w-1 do
+                if struttura.[i,j].visited=false then
+                    k<-k+1
+    |]
+    if k>0 then true else false
 type maze(w , h ) =
     member val Struttura:cell[,] = Array2D.create h w (new cell())
 
@@ -87,17 +104,32 @@ type maze(w , h ) =
          cancellaMuri(getCell(current),this.Struttura.[0,0])
          let mutable next = false,new cell()
          getCell(current).visited<-true
-         while getBool(current)=false do
-            j<-(getCell(current).x)
-            i<-(getCell(current).y)
-            Log.msg "Exploring node: (%d,%d)" j i
-            next <- getRandomVicino(i,j,h,w,this.Struttura)
-            getCell(next).visited<-true
-            //apro i muri
-            cancellaMuri(getCell(next),getCell(current))
+
+         //Generazione
+         let mutable stack:(bool*cell) list = []
+         stack<-(push(stack,current))
+         while labirintoVisitato(this.Struttura,h,w)=true do
+             if getBool(current)=false then
+                j<-(getCell(current).x)
+                i<-(getCell(current).y)
+                Log.msg "Exploring node: (%d,%d)" j i
+                next <- getRandomVicino(i,j,h,w,this.Struttura)
+                getCell(next).visited<-true
+                //apro i muri
+                cancellaMuri(getCell(next),getCell(current))
             
-            current<-next
-            
+                current<-next
+                stack<-(push(stack,current))
+             else 
+                 if stack.Length>0 then 
+                     current<-stack.Head
+                     stack<-stack.Tail
+         //Creo un uscita      
+        //reset
+        
+         for i in 0..h-1 do 
+             for j in 0..w-1 do
+                this.Struttura.[i,j].visited<-true
             
      //La prima cella e' visitata sicuramente
          
