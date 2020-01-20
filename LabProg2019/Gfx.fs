@@ -19,7 +19,7 @@ open System.Text
 
 type cell () =  //todo sposta quando capisci come fare un altro file
     member val visited = false with get , set
-    member val topWall = false with get,set
+    member val topWall = true with get,set
     member val bottomWall = true with get,set
     member val rightWall = true with get, set
     member val leftWall = true with get,set
@@ -145,13 +145,14 @@ type wronly_raster (w, h) =
 
     member this.draw_cell (x0, y0, w, h, color,cella:cell) =
         let x1, y1 = x0 + w - 1, y0 + h - 1
-        let dash = CharInfo.create(Config.dash,Color.Yellow)
-        let underscore = CharInfo.create(Config.underscore,Color.Yellow)
-        let pipe = CharInfo.create(Config.pipe,Color.Yellow)
-        if(cella.topWall=true || cella.visited=false) then     this.draw_line (x0+1, y0, x1-1, y0, underscore)//top
-        if(cella.leftWall=true) then    this.draw_line (x0, y0, x0, y1, pipe)//sx
-        if(cella.rightWall=true) then       this.draw_line (x1, y1, x1, y0, pipe)//dx
-        if(cella.bottomWall=true) then  this.draw_line (x1-1, y1, x0+1, y1, underscore)     //bottom
+        let dash = CharInfo.create(Config.dash,color)
+        let underscore = CharInfo.create(Config.underscore,color)
+        let pipe = CharInfo.create(Config.pipe,color)
+        let blank = CharInfo.create(Config.empty_pixel_char,color)
+        if(cella.topWall=true || cella.visited=false) then     this.draw_line (x0+1, y0, x1-1, y0, underscore) else this.draw_line (x0+1, y0, x1-1, y0, blank )//top
+        if(cella.leftWall=true || cella.visited=false) then    this.draw_line (x0, y0, x0, y1, pipe) else this.draw_line (x0, y0, x0, y1, blank)//sx
+        if(cella.rightWall=true || cella.visited=false) then       this.draw_line (x1, y1, x1, y0, pipe) else this.draw_line (x1, y1, x1, y0, blank)//dx
+        if(cella.bottomWall=true || cella.visited=false) then  this.draw_line (x1-1, y1, x0+1, y1, underscore)else this.draw_line (x1-1, y1, x0+1, y1, blank)     //bottom
         
     /// Draw a circle with (x0, y0) as center and r as ray, using px as pixel.
     member this.draw_circle (x0, y0, r, px) =
@@ -304,7 +305,8 @@ type image (w, h, pixels : pixel[]) =
     new (w, h, ?px) = new image (w, h, Array.create (w * h) (defaultArg px pixel.empty))
 
     /// Retrieve the pixels as a 1-dimensional array.
-    member val internal pixels = pixels
+    member val pixels = pixels with set,get
+    
 
     override __.unsafe_get (x, y) = pixels.[y * w + x]
     override __.unsafe_plot (x, y, px) = pixels.[y * w + x] <- px
@@ -358,7 +360,6 @@ type sprite (img : image, x_ : int, y_ : int, z_ : int) =
     
     /// Draw this sprite onto the given wronly_raster. Clamping may take place.
     member spr.draw wr = spr.blit (wr, int spr.x, int spr.y)
-
 
 /// Class respresenting a subregion of the parent raster.
 /// Constructor arguments are the parent raster and the subregion coordinates and size relative to the parent coordinates.

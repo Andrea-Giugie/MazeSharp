@@ -15,6 +15,7 @@ let pipe = '|'
 let dash = "-"
 let underscore = '_'
 let empty_pixel_char = ' '
+let vuoto = '*'
 
 let default_flip_queue = 2  // double buffering
 let default_fps_cap = 30
