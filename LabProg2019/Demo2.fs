@@ -20,8 +20,8 @@ type state = {
     sprites: sprite[]
 
 }
-let R = 10 //righe i
-let C = 10  //colonne j
+let R = 20 //righe i
+let C = 20  //colonne j
 let GrandezzaCella=3
 let centroCella = GrandezzaCella/2
 

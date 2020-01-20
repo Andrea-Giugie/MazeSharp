@@ -24,17 +24,6 @@ type CharInfo with
     /// Check whether this pixel is a wall.
     member this.isWall = this = pixel.wall
 
-(*let getRandomVicino(x:int,y:int,maxX:int,maxY:int,matrice:cell[,])=
-    
-    let l:cell[]=Array.create 4 (new cell())
-    let mutable i = 0
-    if((x-1)>=0 && (x-1)<maxX && y>=0 && y<maxY ) then l.[i]<-(matrice.[x-1,y]);i<-i+1   //Sinistra
-    if((x+1)>=0 && (x+1)<maxX && y>=0 && y<maxY && (matrice.[x+1,y].visited=false)) then l.[i]<-(matrice.[x+1,y]);i<-i+1     //Destra
-    if((x)>=0 && x<maxX && (y-1)>=0 && (y-1)<maxY && (matrice.[x,y-1].visited=false)) then l.[i]<-(matrice.[x,y-1]);i<-i+1     //Sopra
-    if((x)>=0 && x<maxX && (y+1)>=0 && (y+1)<maxY && (matrice.[x,y+1].visited=false)) then l.[i]<-(matrice.[x,y+1]);i<-i+1     //Sotto
- 
-    l.[i]*)
-
 let getRandomVicino(x:int,y:int,maxX:int,maxY:int,matrice:cell[,])=
     let mutable i = 0
     let l =[|
@@ -138,16 +127,16 @@ type maze(w , h ) =
          else
             j<-0
             i<-System.Random().Next(1, h)
-        //reset
-         this.Struttura.[i,j].finishLine<-true
-         this.Struttura.[i,j].leftWall<-false
-         this.Struttura.[i,j].topWall<-false
-         this.Struttura.[i,j].rightWall<-false
-         this.Struttura.[i,j].bottomWall<-false
         
+         if i = 0 then this.Struttura.[i,j].topWall<-false
+         if j = 0 then this.Struttura.[i,j].leftWall<-false
+         if i = h-1 then this.Struttura.[i,j].rightWall<-false
+         if j = w-1 then this.Struttura.[i,j].bottomWall<-false
+         this.Struttura.[i,j].finishLine<-true
+        //reset visited<-false
          for i in 0..h-1 do 
              for j in 0..w-1 do
-                this.Struttura.[i,j].visited<-false
+                this.Struttura.[i,j].visited<-true
             
      //La prima cella e' visitata sicuramente
          

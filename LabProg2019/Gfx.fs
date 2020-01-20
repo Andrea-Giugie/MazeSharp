@@ -344,9 +344,12 @@ type image (w, h, pixels : pixel[]) =
         i
     static member cella (w, h, color,cella:cell, ?filled_px) =
           let i = new image (w, h)
+          
           if cella.visited=true then
-            i.draw_cell (0, 0, w, h, Color.Blue,cella)
-          else i.draw_cell (0, 0, w, h, color,cella)
+            if cella.finishLine=true then i.draw_cell (0, 0, w, h, Color.Green,cella)
+            else i.draw_cell (0, 0, w, h, Color.Blue,cella)
+          else
+              i.draw_cell (0, 0, w, h, color,cella)
           
           Option.iter (fun px -> i.flood_fill (i.width / 2, i.height / 2, px)) filled_px
           i
