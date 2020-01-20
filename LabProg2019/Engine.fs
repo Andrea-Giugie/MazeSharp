@@ -112,6 +112,14 @@ type engine (w : int, h : int, ?fps_cap : int, ?flip_queue) =
             data <- this.shoot (update k) data
         Log.msg "exiting engine loop-on-key."
 
+   (* member this.overrideSprite(nuovoSprite:sprite,id:int)=
+        lock sprites <| fun () -> 
+            for i in 0..List.length sprites do 
+                if sprites.[i].id = id then 
+                    sprites. <- nuovoSprite
+    *)
+            
+
     /// Start the engine loop given a custom update function and an initial state.
     /// The update function is called every I milliseconds, where I = 1000 / fps_cap, on a different thread, allowing advanced concurrent rendering strategies.
     /// A key may either have or not have been pressed, therefore a value of type 'ConsoleKeyInfo option' is passed to the update function, together with the output wronly_raster and the state.

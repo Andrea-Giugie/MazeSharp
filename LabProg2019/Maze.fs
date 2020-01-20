@@ -16,9 +16,6 @@ open System.Text
 [<Diagnostics.DebuggerDisplay("{ ToString ()}")>]
 
 
-
-
-
 type CharInfo with
     /// Shortcut for creating a wall pixel.
     static member wall = pixel.create (Config.wall_pixel_char, Color.White)
