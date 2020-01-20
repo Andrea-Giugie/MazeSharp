@@ -18,6 +18,8 @@ open System.Text
 //
 
 type cell () =  //todo sposta quando capisci come fare un altro file
+    member val x=0 with get,set
+    member val y=0 with get,set
     member val visited = false with get , set
     member val topWall = true with get,set
     member val bottomWall = true with get,set
@@ -332,7 +334,10 @@ type image (w, h, pixels : pixel[]) =
         i
     static member cella (w, h, color,cella:cell, ?filled_px) =
           let i = new image (w, h)
-          i.draw_cell (0, 0, w, h, color,cella)
+          if cella.visited=true then
+            i.draw_cell (0, 0, w, h, Color.Blue,cella)
+          else i.draw_cell (0, 0, w, h, color,cella)
+          
           Option.iter (fun px -> i.flood_fill (i.width / 2, i.height / 2, px)) filled_px
           i
 

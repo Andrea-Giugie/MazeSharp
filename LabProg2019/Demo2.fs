@@ -22,7 +22,7 @@ type state = {
 }
 let R = 10  //righe i
 let C = 15  //colonne j
-let GrandezzaCella=7
+let GrandezzaCella=5
 let centroCella = GrandezzaCella/2
 
 let genRandomNumbers count =
@@ -53,19 +53,15 @@ let main () =
             let fixedy = ((int y)-centroCella)/GrandezzaCella
             let cella = st.maze.getByCoordinates(fixedx,fixedy) 
             cella.visited<-true
-            let r = System.Random()
-            let l= r.Next(0, 3)
-            if l=0 then cella.bottomWall<-false
-            if l=1 then cella.topWall<-false
-            if l=2 then cella.leftWall<-false
-            if l=3 then cella.rightWall<-false
+        
             //ignore <| engine.create_and_register_sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella), (0),(0), 1 , 1)
-            let immagine = image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella)
+            
             let NumeroMappato=fixedx+fixedy*C
-            let mutable a =3
-            st.sprites.[NumeroMappato].clear
-            st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
-            engine.register_sprite st.sprites.[NumeroMappato]
+            if st.sprites.[NumeroMappato].z = 0 then //Solo quando non è mai stato sovrascritto
+                let immagine = image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,cella)
+                st.sprites.[NumeroMappato].clear
+                st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
+                engine.register_sprite st.sprites.[NumeroMappato]
             
             Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
             //Log.msg "origin (0,0): %s "((st.maze.getByCoordinates(0,0)).ToString())
@@ -90,7 +86,7 @@ let main () =
     let arr =[|
         for i in 0..R-1 do
             for j in 0..C-1 do
-                if(i=0 && j=0) then maze.get(i,j).visited<-true
+                if(i=0 && j=0) then maze.get(i,j).visited<-true;maze.get(i,j).topWall<-false
                 let s = engine.create_and_register_sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Yellow,maze.get(i,j)), (GrandezzaCella*j),(GrandezzaCella*i), 0)
                 yield s
     |]
