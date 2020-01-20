@@ -124,12 +124,12 @@ type maze(w , h ) =
                  if stack.Length>0 then 
                      current<-stack.Head
                      stack<-stack.Tail
-               
+         //Creo un uscita      
         //reset
-        (*
+        
          for i in 0..h-1 do 
              for j in 0..w-1 do
-                this.Struttura.[i,j].visited<-false*)
+                this.Struttura.[i,j].visited<-true
             
      //La prima cella e' visitata sicuramente
          
