@@ -114,17 +114,25 @@ type maze(w , h ) =
                 i<-(getCell(current).y)
                 Log.msg "Exploring node: (%d,%d)" j i
                 next <- getRandomVicino(i,j,h,w,this.Struttura)
-                getCell(next).visited<-true
-                //apro i muri
-                cancellaMuri(getCell(next),getCell(current))
+                if getBool(next)=false then
+                    getCell(next).visited<-true
+                    //apro i muri
+                    cancellaMuri(getCell(next),getCell(current))
             
-                current<-next
-                stack<-(push(stack,current))
+                    current<-next
+                    stack<-(push(stack,current))
+                else 
+                    if stack.Length>0 then 
+                        current<-stack.Head
+                        stack<-stack.Tail
              else 
                  if stack.Length>0 then 
                      current<-stack.Head
                      stack<-stack.Tail
-         //Creo un uscita      
+         //Creo un uscita: 
+            //dato che deve essere su un bordo, stabilisco se i o j sono uguali a zero
+         let r = System.Random().Next(0, 2)
+
         //reset
         
          for i in 0..h-1 do 
@@ -133,7 +141,6 @@ type maze(w , h ) =
             
      //La prima cella e' visitata sicuramente
          
-     //Apro i muri
 
                      
 
