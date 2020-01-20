@@ -1,10 +1,4 @@
-﻿(*
-* LabProg2019 - Progetto di Programmazione a.a. 2019-20
-* Demo1.fs: sample usage of engine
-* (C) 2019 Alvise Spano' @ Universita' Ca' Foscari di Venezia
-*)
-
-module LabProg2019.Demo2
+﻿module LabProg2019.AutoSolve
 
 open System
 open Engine
@@ -32,7 +26,7 @@ let genRandomNumbers count =
 
 let main () =       
     let engine = new engine (C*GrandezzaCella, R*GrandezzaCella)
-    let maze = new maze(C,R)
+    let maze = new maze(C,R,true)
     maze.generate
 
     let my_update (key : ConsoleKeyInfo) (screen : wronly_raster) (st : state) =
@@ -70,7 +64,7 @@ let main () =
                     engine.register_sprite st.sprites.[NumeroMappato]
             
                 //Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
-                st.player.move_by (dx, dy)
+                //st.player.move_by (dx, dy)
                 if cella.finishLine=true then
                     Log.msg "HAI VINTO"
                 //Log.msg "x: %f, y: %f" st.player.x st.player.y

@@ -71,7 +71,7 @@ let labirintoVisitato(struttura:cell[,],h:int,w:int)=
                     k<-k+1
     |]
     if k>0 then true else false
-type maze(w , h ) =
+type maze(w , h ,solve:bool) =
     member val Struttura:cell[,] = Array2D.create h w (new cell())
 
     member this.get(x:int,y:int):cell= 
@@ -135,8 +135,8 @@ type maze(w , h ) =
          this.Struttura.[i,j].finishLine<-true
         //reset visited<-false
          for i in 0..h-1 do 
-             for j in 0..w-1 do
-                this.Struttura.[i,j].visited<-true
+            for j in 0..w-1 do
+            this.Struttura.[i,j].visited<- solve
             
      //La prima cella e' visitata sicuramente
          
