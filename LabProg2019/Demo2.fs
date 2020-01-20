@@ -20,9 +20,9 @@ type state = {
     sprites: sprite[]
 
 }
-let R = 10  //righe i
-let C = 15  //colonne j
-let GrandezzaCella=5
+let R = 20  //righe i
+let C = 30  //colonne j
+let GrandezzaCella=3
 let centroCella = GrandezzaCella/2
 
 let genRandomNumbers count =
