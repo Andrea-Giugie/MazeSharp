@@ -36,6 +36,20 @@ let getRandomVicino(x:int,y:int,maxX:int,maxY:int,matrice:cell[,])=
     if i = 0 then 
         (true, (new cell()))
     else l.[r]
+//La differenza con quello di prima è che mi prende le celle vicine con un percorso(ci sono i muri aperti)
+let getPossiblePath(x:int,y:int,maxX:int,maxY:int,matrice:cell[,])=
+    let mutable i = 0
+    let l =[|
+        if((x-1)>=0 && (x-1)<maxX && y>=0 && y<maxY && (matrice.[x-1,y].visited=false) && matrice.[x,y].topWall=false) then yield false,(matrice.[x-1,y]);i<-i+1   //sopra
+        if((x+1)>=0 && (x+1)<maxX && y>=0 && y<maxY && (matrice.[x+1,y].visited=false) && matrice.[x,y].bottomWall=false ) then yield false,(matrice.[x+1,y]);i<-i+1     //sotto
+        if((x)>=0 && x<maxX && (y-1)>=0 && (y-1)<maxY && (matrice.[x,y-1].visited=false) && matrice.[x,y].leftWall=false) then yield false,(matrice.[x,y-1]);i<-i+1     //sinistra
+        if((x)>=0 && x<maxX && (y+1)>=0 && (y+1)<maxY && (matrice.[x,y+1].visited=false)&& matrice.[x,y].rightWall=false ) then yield false,(matrice.[x,y+1]);i<-i+1     //destra
+    |]
+    let r = System.Random().Next(0, i)
+    if i = 0 then 
+        (true, (new cell()))
+    else l.[r]
+
 let getBool((b,c):bool*cell)=b
 let getCell((b,c):bool*cell)=c
 
@@ -137,6 +151,7 @@ type maze(w , h ,solve:bool) =
          for i in 0..h-1 do 
             for j in 0..w-1 do
             this.Struttura.[i,j].visited<- solve
+         this.Struttura.[0,0].visited<-true
             
      //La prima cella e' visitata sicuramente
          

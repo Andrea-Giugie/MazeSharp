@@ -26,8 +26,9 @@ let genRandomNumbers count =
 
 let main () =       
     let engine = new engine (C*GrandezzaCella, R*GrandezzaCella)
-    let maze = new maze(C,R,true)
+    let maze = new maze(C,R,false)
     maze.generate
+    let mutable vinto=false
 
     let my_update (key : ConsoleKeyInfo) (screen : wronly_raster) (st : state) =
         // move player
@@ -83,7 +84,7 @@ let main () =
                 let s = engine.create_and_register_sprite (image.cella (GrandezzaCella, GrandezzaCella, Color.Yellow,maze.get(i,j)), (GrandezzaCella*j),(GrandezzaCella*i), 0)
                 yield s
     |]
-    let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), centroCella,centroCella, 0)
+    let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), centroCella,centroCella, 3)
 
     engine.show_fps<-false
     // initialize state
@@ -92,5 +93,68 @@ let main () =
         maze= maze
         sprites=arr
         }
+    let mutable stack:(bool*cell) list = []
+
+    let mutable next = false,new cell()
+    let mutable i = 0
+    let mutable j = 0
+    let mutable current:(bool*cell) = (false,(maze.Struttura.[i,j]))
+    getCell(current).visited<-true
+    //stack<-push(stack,current)
+
+    let solve (keyo : ConsoleKeyInfo option) (screen : wronly_raster) (st : state) =
+
+        let playerX=st.player.x
+        let playerY=st.player.y
+        if vinto = false then //Se non ho ancora vinto devo trovare la strada
+            let x = int (int playerX/GrandezzaCella)
+            let y = int (int playerY/GrandezzaCella)
+
+            if getBool(current)=false then
+               j<-(getCell(current).x)
+               i<-(getCell(current).y)
+               
+               next <- getPossiblePath(i,j,R,C,st.maze.Struttura)
+               Log.msg "nextNode (%d,%d)" (getCell(next).x) (getCell(next).y)
+               if getBool(next)=false then
+                    
+                   getCell(next).visited<-true
+                   //apro i muri
+                   
+                   let NumeroMappato=getCell(next).x+getCell(next).y*C
+                   if st.sprites.[NumeroMappato].z = 0 then //Solo quando non è mai stato sovrascritto
+                       st.player.x <- float ((getCell(next).x)*GrandezzaCella+centroCella)
+                       st.player.y <- float ((getCell(next).y)*GrandezzaCella+centroCella)
+                       let immagine = image.cella (GrandezzaCella, GrandezzaCella, Color.Blue,getCell(next))
+                       st.sprites.[NumeroMappato].clear
+                       st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
+                       engine.register_sprite st.sprites.[NumeroMappato]
+            
+                   current<-next
+                   stack<-(push(stack,current))
+               else 
+                   if stack.Length>0 then
+                       
+                       while(getBool(getPossiblePath(i,j,R,C,st.maze.Struttura))=true) do
+                           current<-stack.Head
+                           stack<-stack.Tail
+                           j<-(getCell(current).x)
+                           i<-(getCell(current).y)
+            else 
+                if stack.Length>0 then 
+                    current<-stack.Head
+                    stack<-stack.Tail
+            
+
+
+
+
+            //Check finale per vedere se si vince
+            if ((st.maze.getByCoordinates(x,y).finishLine)=true) then
+                vinto<-true
+                st.player.x<-playerX
+                st.player.y<-playerY
+        st, match keyo with None -> false | Some k -> k.KeyChar = 'q'
+    
     // start engine
-    engine.loop_on_key my_update st0
+    engine.loop solve st0
