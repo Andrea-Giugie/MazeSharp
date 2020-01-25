@@ -29,7 +29,7 @@ let main_game () =
     Log <- new remote_logger (client)
 
     // TODO: call your own main here
-    AutoSolve.main ()
+    MainScreen.main ()
     0
 
 // log mode (server)
