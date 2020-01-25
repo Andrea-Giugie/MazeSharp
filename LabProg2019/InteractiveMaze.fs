@@ -16,9 +16,7 @@ open System.Text
 [< NoEquality; NoComparison >]
 type state = {
     player : sprite
-    maze: maze
     sprites: sprite[]
-
 }
 let R = 20 //righe i
 let C = 20  //colonne j
@@ -49,7 +47,6 @@ let main () =
             // TODO: check bounds
             let x = (st.player.x + float dx) 
             let y = (st.player.y + float dy)
-            //let mutable nuovoSprite = st.sprites
             try //Controllo che la cella in cui voglio muovermi esiste, e che non esista un muro tra il player e la cella
                 let fixedx = ((int x)-centroCella)/GrandezzaCella
                 let fixedy = ((int y)-centroCella)/GrandezzaCella
@@ -57,9 +54,9 @@ let main () =
                 let currentY = ((int st.player.y)-centroCella)/GrandezzaCella
 
                 //Controllo che non ci sia un muro 
-                let currentCella = st.maze.getByCoordinates(currentX,currentY)
+                let currentCella = maze.getByCoordinates(currentX,currentY)
                 if(fixedx-currentX=1 && currentCella.rightWall=false || fixedx-currentX= -1 && currentCella.leftWall=false || fixedy-currentY=1 && currentCella.bottomWall=false || fixedy-currentY= -1 && currentCella.topWall=false) then
-                    let cella = st.maze.getByCoordinates(fixedx,fixedy) 
+                    let cella = maze.getByCoordinates(fixedx,fixedy) 
                     cella.visited<-true
                     Log.msg "cella: (%d,%d), player: (%d,%d)" fixedx fixedy  currentX currentY
         
@@ -71,20 +68,16 @@ let main () =
                         st.sprites.[NumeroMappato]<-new sprite (immagine, int st.sprites.[NumeroMappato].x, int st.sprites.[NumeroMappato].y, int st.sprites.[NumeroMappato].z+1)
                         engine.register_sprite st.sprites.[NumeroMappato]
             
-                    //Log.msg "currentCell: (%d,%d):%s " fixedx fixedy ((st.maze.getByCoordinates(fixedx,fixedy)).ToString())
                     st.player.move_by (dx, dy)
                     if cella.finishLine=true then
                         Log.msg "HAI VINTO"
                         vinto<-true
-                    //Log.msg "x: %f, y: %f" st.player.x st.player.y
             
             
             with 
             | :? System.IndexOutOfRangeException -> printfn "Exception handled.";
         st, key.KeyChar = 'q'
 
-    // create simple backgroud and player
-    //ignore <| engine.create_and_register_sprite (image.rectangle (W, H, pixel.filled Color.Yellow, pixel.filled Color.Blue), 0, 0, 0)
     let arr =[|
         for i in 0..R-1 do
             for j in 0..C-1 do
@@ -95,11 +88,10 @@ let main () =
     let player = engine.create_and_register_sprite (image.rectangle (1, 1, pixel.filled Color.Blue), centroCella,centroCella, 0)
 
     engine.show_fps<-false
-    // initialize state
     let st0 = { 
         player = player
-        maze= maze
         sprites=arr
         }
-    // start engine
+
     engine.loop_on_key my_update st0
+

@@ -73,6 +73,7 @@
     <Compile Include="Test.fs" />
     <Compile Include="AutoSolve.fs" />
     <Compile Include="InteractiveMaze.fs" />
+    <Compile Include="MainScreen.fs" />
     <Compile Include="Main.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
