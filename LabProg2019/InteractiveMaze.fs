@@ -20,7 +20,7 @@ type state = {
 }
 let R = 20 //righe i
 let C = 20  //colonne j
-let GrandezzaCella=3
+let GrandezzaCella=5
 let centroCella = GrandezzaCella/2
 
 let genRandomNumbers count =

@@ -17,6 +17,7 @@ open System.IO
 //
   
 let main_game () =
+//test
     use p = new Process ()
     p.StartInfo.UseShellExecute <- true
     p.StartInfo.CreateNoWindow <- false
